@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xwikidoc>
+<web>CalendarCode</web>
+<name>CalendarEventListener</name>
+<language></language>
+<defaultLanguage></defaultLanguage>
+<translation>0</translation>
+<parent></parent>
+<creator>XWiki.Admin</creator>
+<author>XWiki.Admin</author>
+<customClass></customClass>
+<contentAuthor>XWiki.Admin</contentAuthor>
+<creationDate>1310979880000</creationDate>
+<date>1312550418000</date>
+<contentUpdateDate>1312550418000</contentUpdateDate>
+<version>158.1</version>
+<title>CalendarEventListener</title>
+<template></template>
+<defaultTemplate></defaultTemplate>
+<validationScript></validationScript>
+<comment></comment>
+<minorEdit>false</minorEdit>
+<syntaxId>xwiki/2.0</syntaxId>
+<hidden>false</hidden>
+<content>{{groovy}}
+import org.xwiki.observation.*
+import org.xwiki.observation.event.*
+import org.xwiki.bridge.event.*
+import com.xpn.xwiki.web.*
+import org.xwiki.context.*
+import com.xpn.xwiki.*
+import org.apache.commons.lang.StringUtils
+
+
+class CalendarEventListener implements EventListener
+{
+    def xwiki
+    def context
+
+    CalendarEventListener(xwiki, context)
+    {
+        this.xwiki = xwiki
+        this.context = context
+    }
+
+    String getName()
+    {
+        // The unique name of this event listener
+        return "calendarEvent"
+    }
+
+    List&lt;Event&gt; getEvents()
+    {
+        // The list of events this listener listens to
+        return Arrays.asList(new DocumentUpdatingEvent(), new DocumentCreatingEvent())
+    }
+
+    // Called by the Observation Manager when an event matches the list of events returned
+    // by getEvents()
+    void onEvent(Event event, Object source, Object data)
+    {
+        if (source.getObject("CalendarCode.EventClass")) {
+            def document = xwiki.getDocument("Test.Logger")
+   def obj = source.getObject("CalendarCode.EventClass")
+   def privacy = obj.get('privacy').value
+   document.setContent("${document.getContent()}\n${source.fullName} - ${privacy}")
+            document.save("Logging event", true)
+   //removing old rights and adding new XWikiRights Objects
+
+   def crtContext = Utils.getComponent(Execution.class).getContext().getProperty('xwikicontext')
+   source.removeObjects("xwiki:XWiki.XWikiRights")
+   if(privacy == 'private' ){
+    //view
+    def n = source.createNewObject("xwiki:XWiki.XWikiRights", crtContext)
+             def vObj = source.getObject("XWiki.XWikiRights", n)
+    vObj.set('levels', 'view', crtContext)
+    vObj.set('allow', true, crtContext)
+    def aUsers = obj.get('guestViewList').getValue()
+    def users = ''
+    for(item in aUsers){
+      users += item
+    }
+    users = 'XWiki.vlad'
+    vObj.set('users', users, crtContext)
+    //edit
+    def m = source.createNewObject('xwiki:XWiki.XWikiRights', crtContext)
+    def eObj = source.getObject('XWiki.XWikiRights', m)
+    eObj.set('levels', 'edit', crtContext)
+    eObj.set('allow', true)
+    aUsers = obj.get('guestEditList').getValue()
+                                for(item in aUsers){
+                                  users += item
+                                }
+    eObj.set('users', users, crtContext)
+            }
+   else if(privacy == 'public'){
+    //view
+    n = source.createNewObject('xwiki:XWiki.XWikiRights', crtContext)
+    vObj = source.getObject('XWiki.XWikiRights', n)
+    vObj.set('groups', 'XWikiAllGroup', crtContext)
+    vObj.set('levels', 'view', crtContext)
+    vObj.set('allow', true, crtContext)
+    //edit
+    m = source.createNewObject('xwiki:XWikiRights', crtContext)
+    eObj = source.getObject('XWiki.XWikiRights', m)
+    eObj.set('levels', 'edit', crtContext)
+    eObj.set('allow', true, crtContext)
+    aUsers = obj.get('guestEditList').getValue()
+    users = ''
+                                for(item in aUsers){
+                                  users += item
+                                }
+    eObj.set('users', users, crtContext)
+   }
+   else{
+   //default privacy
+   
+   }
+
+        }
+    }
+
+}
+
+// Register against the Observation Manager
+def observation = Utils.getComponent(ObservationManager.class)
+observation.removeListener("calendarEvent")
+def listener = new CalendarEventListener(xwiki, xcontext)
+observation.addListener(listener)
+
+{{/groovy}}
+
+\\</content></xwikidoc>

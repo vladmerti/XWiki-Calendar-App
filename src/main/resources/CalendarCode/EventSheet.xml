@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xwikidoc>
+<web>CalendarCode</web>
+<name>EventSheet</name>
+<language></language>
+<defaultLanguage>en</defaultLanguage>
+<translation>0</translation>
+<parent>CalendarCode.EventClass</parent>
+<creator>XWiki.Admin</creator>
+<author>XWiki.Admin</author>
+<customClass></customClass>
+<contentAuthor>XWiki.Admin</contentAuthor>
+<creationDate>1309249306000</creationDate>
+<date>1310544876000</date>
+<contentUpdateDate>1310544876000</contentUpdateDate>
+<version>59.1</version>
+<title>EventClass Sheet</title>
+<template></template>
+<defaultTemplate></defaultTemplate>
+<validationScript></validationScript>
+<comment></comment>
+<minorEdit>false</minorEdit>
+<syntaxId>xwiki/2.0</syntaxId>
+<hidden>false</hidden>
+<object>
+<class>
+<name>XWiki.JavaScriptExtension</name>
+<customClass></customClass>
+<customMapping></customMapping>
+<defaultViewSheet></defaultViewSheet>
+<defaultEditSheet></defaultEditSheet>
+<defaultWeb></defaultWeb>
+<nameField></nameField>
+<validationScript></validationScript>
+<cache>
+<cache>0</cache>
+<disabled>0</disabled>
+<displayType>select</displayType>
+<multiSelect>0</multiSelect>
+<name>cache</name>
+<number>5</number>
+<prettyName>Caching policy</prettyName>
+<relationalStorage>0</relationalStorage>
+<separator> </separator>
+<separators> ,|</separators>
+<size>1</size>
+<unmodifiable>0</unmodifiable>
+<values>long|short|default|forbid</values>
+<classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+</cache>
+<code>
+<disabled>0</disabled>
+<name>code</name>
+<number>2</number>
+<prettyName>Code</prettyName>
+<rows>20</rows>
+<size>50</size>
+<unmodifiable>0</unmodifiable>
+<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+</code>
+<name>
+<disabled>0</disabled>
+<name>name</name>
+<number>1</number>
+<prettyName>Name</prettyName>
+<size>30</size>
+<unmodifiable>0</unmodifiable>
+<classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+</name>
+<parse>
+<disabled>0</disabled>
+<displayFormType>select</displayFormType>
+<displayType>yesno</displayType>
+<name>parse</name>
+<number>4</number>
+<prettyName>Parse content</prettyName>
+<unmodifiable>0</unmodifiable>
+<classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+</parse>
+<use>
+<cache>0</cache>
+<disabled>0</disabled>
+<displayType>select</displayType>
+<multiSelect>0</multiSelect>
+<name>use</name>
+<number>3</number>
+<prettyName>Use this extension</prettyName>
+<relationalStorage>0</relationalStorage>
+<separator> </separator>
+<separators> ,|</separators>
+<size>1</size>
+<unmodifiable>0</unmodifiable>
+<values>currentPage=Always on this page|onDemand=On demand|always=Always on this wiki</values>
+<classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+</use>
+</class>
+<name>CalendarCode.EventSheet</name>
+<number>0</number>
+<className>XWiki.JavaScriptExtension</className>
+<guid>6de0453f-38be-4b60-b8d8-5ae4892014c5</guid>
+<property>
+<cache>long</cache>
+</property>
+<property>
+<code>var startDate = new DatePicker({
+  relative: "CalendarCode.EventClass_0_startDate",
+  language: "$context.language",
+  dateFormat: [ ["dd","mm","yyyy"], "/" ]
+});
+
+var endDate = new DatePicker({
+  relative: "CalendarCode.EventClass_0_endDate",
+  language: "$context.language",
+  dateFormat: [ ["dd","mm","yyyy"], "/" ]
+});
+
+var repeatsUntil = new DatePicker({
+  relative: "CalendarCode.EventClass_0_repeatsUntil",
+  language: "$context.language",
+  dateFormat: [ ["dd","mm","yyyy"], "/" ]
+});
+
+document.observe("dom:loaded", function() {
+  //loading the guests in the guest list
+  if($('CalendarCode.EventClass_0_guestViewList').value){
+    for(i = 0; i &lt; $('CalendarCode.EventClass_0_guestViewList').value.split('|').size(); i++){
+      addGuestRow($('CalendarCode.EventClass_0_guestViewList').value.split('|')[i], 'view');
+    }
+  }
+  if($('CalendarCode.EventClass_0_guestEditList').value){
+    for(i = 0; i &lt; $('CalendarCode.EventClass_0_guestEditList').value.split('|').size(); i++){
+      addGuestRow($('CalendarCode.EventClass_0_guestEditList').value.split('|')[i], 'edit');
+    }
+  }
+});
+
+$('addGuest').observe('click', respondToAddGuestClick);
+
+function respondToAddGuestClick(event){
+  Event.stop(event);
+  var guestRights = Form.getInputs('newGuest', 'radio', 'guestRights').find(function(radio){return radio.checked}).value;
+  addGuestRow($('guestName').value, guestRights);
+  if(guestRights == "view"){
+    if($('CalendarCode.EventClass_0_guestViewList').value){
+      guestViewList = $('CalendarCode.EventClass_0_guestViewList').value + '|' + $('guestName').value;
+    }
+    else{
+      guestViewList = $('guestName').value;
+    }
+    $('CalendarCode.EventClass_0_guestViewList').value = guestViewList;
+  }
+  else if(guestRights == "edit"){
+    if($('CalendarCode.EventClass_0_guestEditList').value){
+      guestEditList = $('CalendarCode.EventClass_0_guestEditList').value + '|' + $('guestName').value;
+    }
+    else{
+      guestEditList = $('guestName').value;
+    }
+    $('CalendarCode.EventClass_0_guestEditList').value = guestEditList;
+  }
+}
+
+function addGuestRow(user, right){
+  guestRemove = new Element('img',{'src' : "/xwiki/resources/icons/silk/cross.gif", 'class' : 'guestRemoveImage', 'id' : user}).setStyle({cursor : 'pointer'});
+  guestRemove.observe('click', respondToRemoveClick);
+  cell1 = new Element('TD', {'class' : 'guestName'}).update(user);
+  cell2 = new Element('TD', {'class' : 'guestRight'}).update(right);
+  cell3 = new Element('TD', {'class' : 'guestRemove'}).update(guestRemove);
+  row = new Element('TR', {'class' : 'guestRow'});
+  row.appendChild(cell1);
+  row.appendChild(cell2);
+  row.appendChild(cell3);
+  $('guestListTable').appendChild(row);
+}
+
+function respondToRemoveClick(event){
+  element = Event.element(event);
+  element.ancestors()[1].remove();
+  guestView = $('CalendarCode.EventClass_0_guestViewList').value.split('|');
+  guestEdit = $('CalendarCode.EventClass_0_guestEditList').value.split('|');
+  guestViewList = "";
+  guestEditList = "";
+  for(i = 0; i &lt; guestView.size(); i++){
+    if(guestView[i] != element.readAttribute('id')){
+      if(guestViewList){
+        guestViewList += '|' + guestView[i];
+      }
+      else{
+        guestViewList = guestView[i];
+      }
+    }
+  } 
+  for(i = 0; i &lt; guestEdit.size(); i++){
+    if(guestEdit[i] != element.readAttribute('id')){ 
+      if(guestEditList){
+        guestEditList += '|' + guestEdit[i];
+      }
+      else{
+        guestEditList = guestEdit[i];
+      }
+    }
+  }
+  $('CalendarCode.EventClass_0_guestViewList').value = guestViewList;
+  $('CalendarCode.EventClass_0_guestEditList').value = guestEditList;
+}</code>
+</property>
+<property>
+<name></name>
+</property>
+<property>
+<parse>1</parse>
+</property>
+<property>
+<use>onDemand</use>
+</property>
+</object>
+<object>
+<class>
+<name>XWiki.SheetClass</name>
+<customClass></customClass>
+<customMapping></customMapping>
+<defaultViewSheet></defaultViewSheet>
+<defaultEditSheet></defaultEditSheet>
+<defaultWeb></defaultWeb>
+<nameField></nameField>
+<validationScript></validationScript>
+<defaultEditMode>
+<disabled>0</disabled>
+<name>defaultEditMode</name>
+<number>1</number>
+<prettyName>Default Edit Mode</prettyName>
+<size>15</size>
+<unmodifiable>0</unmodifiable>
+<classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+</defaultEditMode>
+</class>
+<name>CalendarCode.EventSheet</name>
+<number>0</number>
+<className>XWiki.SheetClass</className>
+<guid>3f4608d1-6b16-432d-aa80-5426f395af7d</guid>
+<property>
+<defaultEditMode></defaultEditMode>
+</property>
+</object>
+<content>{{velocity}}
+##adding resources for datepicker extension
+$xwiki.jsfx.use("js/scriptaculous/scriptaculous.js")
+$xwiki.jsx.use("XWiki.DatePickerExtension", {'defer':false})
+$xwiki.ssx.use("XWiki.DatePickerExtension")
+$xwiki.jsx.use("CalendarCode.EventSheet")
+#set($class = $doc.getObject('CalendarCode.EventClass').xWikiClass)
+#foreach($prop in $class.properties)
+  #if("$prop.name" != "guestViewList" &amp;&amp; "$prop.name" != "guestEditList" &amp;&amp; "$prop.name" != "attendingGuests" &amp;&amp; "$prop.name" != "nonattendingGuests" &amp;&amp; "$prop.name" != "notifiedGuests")
+  ; $prop.prettyName
+  : $doc.display($prop.getName())
+  #end
+  #if("$prop.name" == "guestViewList" || "$prop.name" == "guestEditList")
+
+    {{html}}
+    &lt;div class = "hidden"&gt;
+      $doc.display($prop.getName())
+    &lt;/div&gt;
+    {{/html}}
+  #end
+#end 
+##@todo make adding guests work without js
+##display the guest list
+#if($context.action == 'view')
+    #set($obj = $doc.getObject('CalendarCode.EventClass'))
+	#set($guestViewList = $obj.guestViewList)
+    #set($guestEditList = $obj.guestEditList)
+
+	{{html clean = "false"}}
+	&lt;div id = "guestList"&gt;
+		&lt;div class = "guestListTitle"&gt;
+			$msg.get('eventGuestList')
+		&lt;/div&gt;
+		&lt;table id = "guestListTable"&gt;
+		#foreach($guestView in $guestViewList.split(' '))
+			#if("${guestView}" != "")
+				&lt;tr&gt;&lt;td class = "guestName"&gt;$guestView &lt;/td&gt;&lt;td class = "guestRight"&gt;view&lt;/td&gt;&lt;/tr&gt;
+			#end
+		#end
+		#foreach($guestEdit in $guestEditList.split(' '))
+			#if("${guestEdit}" != "")
+				&lt;tr&gt;&lt;td class = "guestName"&gt;$guestEdit &lt;/td&gt;&lt;td class = "guestRight"&gt;edit&lt;/td&gt;&lt;/tr&gt;
+			#end
+		#end
+		&lt;/table&gt;
+	 &lt;/div&gt; 
+	{{/html}} 
+#end
+#if($context.action == 'inline')
+	#set($guestRightsVals = {'view' : $msg.get("eventViewEvent"), 'edit' : $msg.get("eventModifyEvent")})
+
+	{{html clean = "false"}}
+	&lt;/form&gt;
+	&lt;form id = "newGuest" name = "newGuest" action = "" method = "post"&gt;
+	&lt;div id = "addGuests"&gt;
+	  		&lt;dl&gt;
+	   			&lt;dt&gt;
+	    			&lt;label for = "guestName"&gt;$msg.get("eventGuestName")&lt;/label&gt;
+	   			&lt;/dt&gt;
+	   			&lt;dd&gt;
+	    			&lt;input type = "text" name = "guestName" id = "guestName" class = "suggestUsers"/&gt;
+	   			&lt;/dd&gt;
+	  		&lt;/dl&gt;   
+	  		&lt;dl&gt;
+	   			&lt;dt&gt;
+	    			&lt;label for = "guestRights"&gt;$msg.get("eventGuestRights")&lt;/label&gt;
+	   			&lt;/dt&gt;
+	   			&lt;dd&gt;
+	    			#foreach($key in $guestRightsVals.keySet())
+	     				#if("${key}" == "view")
+	      				&lt;input type = "radio" name = "guestRights" value = "${key}" CHECKED&gt;$guestRightsVals.get($key)&lt;/input&gt;
+	     				#else
+	      				&lt;input type = "radio" name = "guestRights" value = "${key}"&gt;$guestRightsVals.get($key)&lt;/input&gt;
+	     				#end
+	   			 #end
+	   			&lt;/dd&gt;
+	  		&lt;/dl&gt;
+	  		&lt;br/&gt;
+	  		&lt;span class = "buttonwrapper"&gt;
+	   			&lt;input type = "submit" name = "addGuest" id = "addGuest" value = "$msg.get('eventAddGuest')" class = "button" /&gt;
+	  		&lt;/span&gt;
+				&lt;div id = "guestList"&gt;
+					&lt;table id = "guestListTable"&gt;
+	  
+					&lt;/table&gt;
+	  			&lt;/div&gt;  
+	 		&lt;/div&gt;
+		&lt;/form&gt;
+	{{/html}}
+#end
+{{/velocity}}</content></xwikidoc>

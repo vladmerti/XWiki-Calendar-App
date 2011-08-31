@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xwikidoc>
+<web>CalendarCode</web>
+<name>EnglishTranslation</name>
+<language></language>
+<defaultLanguage>en</defaultLanguage>
+<translation>0</translation>
+<parent></parent>
+<creator>XWiki.Admin</creator>
+<author>XWiki.Admin</author>
+<customClass></customClass>
+<contentAuthor>XWiki.Admin</contentAuthor>
+<creationDate>1309770093000</creationDate>
+<date>1309860872000</date>
+<contentUpdateDate>1309860872000</contentUpdateDate>
+<version>1.18</version>
+<title>English Translation</title>
+<template></template>
+<defaultTemplate></defaultTemplate>
+<validationScript></validationScript>
+<comment></comment>
+<minorEdit>true</minorEdit>
+<syntaxId>xwiki/2.0</syntaxId>
+<hidden>false</hidden>
+<content>eventName = Name
+eventStartDate = Start Date
+eventStartTime = Start Time
+eventEndDate = End Date
+eventEndTime = End Time
+eventAllDay = All Day
+eventRepeats = Repeats
+eventNever = Never
+eventDaily = Daily
+eventWeekly = Weekly
+eventMonthly = Monthly
+eventYearly = Yearly
+eventRepeatsUntil = Until
+eventDescription = Description
+eventLocation = Location
+eventColor = Color
+eventRed = Red
+eventGreen = Green
+eventPrivacy = Privacy
+eventDefault = Default
+eventPrivate = Private
+eventPublic = Public
+eventEmailNotifications = Email Notifications
+eventNone = None
+event10Min = 10 Minutes
+event30Min = 30 Minutes
+event1H = 1 Hour
+event1D = 1 Day
+eventGuestName = Guest Name
+eventGuestRights = Guest Rights
+eventViewEvent = View Event
+eventModifyEvent = Modify Event
+eventAddGuest = Add Guest
+eventRemove = Remove
+eventSave = Save
+eventConfirmation = Confirmation
+eventConfirmationMessage = Are you attending the event {0}, which will take place at {1}, from {2}, {3} until {4}, {5}?
+eventYes = Yes
+eventNo = No
+eventNotInvited = You have not been invited to this event or your invitation has been canceled!
+eventAlreadyConfirmed = You have already confirmed/infirmed your attendance to this event!
+eventInvitationSubject = Event invitation
+eventInvitationText = Hello,\n\n {0} has invited you to {1}.\n\n You can view the event here:\n {2}\n\n Please confirm your attendance following the next link:\n {3}\n\n Thank you,
+eventGuestList = Guest List</content></xwikidoc>

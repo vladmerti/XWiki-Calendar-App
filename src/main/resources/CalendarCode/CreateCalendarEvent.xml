@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xwikidoc>
+<web>CalendarCode</web>
+<name>CreateCalendarEvent</name>
+<language></language>
+<defaultLanguage>en</defaultLanguage>
+<translation>0</translation>
+<parent></parent>
+<creator>XWiki.Admin</creator>
+<author>XWiki.Admin</author>
+<customClass></customClass>
+<contentAuthor>XWiki.Admin</contentAuthor>
+<creationDate>1309261589000</creationDate>
+<date>1309946659000</date>
+<contentUpdateDate>1309946659000</contentUpdateDate>
+<version>290.1</version>
+<title>Create Event</title>
+<template></template>
+<defaultTemplate></defaultTemplate>
+<validationScript></validationScript>
+<comment></comment>
+<minorEdit>false</minorEdit>
+<syntaxId>xwiki/2.0</syntaxId>
+<hidden>false</hidden>
+<object>
+<class>
+<name>XWiki.JavaScriptExtension</name>
+<customClass></customClass>
+<customMapping></customMapping>
+<defaultViewSheet></defaultViewSheet>
+<defaultEditSheet></defaultEditSheet>
+<defaultWeb></defaultWeb>
+<nameField></nameField>
+<validationScript></validationScript>
+<cache>
+<cache>0</cache>
+<disabled>0</disabled>
+<displayType>select</displayType>
+<multiSelect>0</multiSelect>
+<name>cache</name>
+<number>5</number>
+<prettyName>Caching policy</prettyName>
+<relationalStorage>0</relationalStorage>
+<separator> </separator>
+<separators> ,|</separators>
+<size>1</size>
+<unmodifiable>0</unmodifiable>
+<values>long|short|default|forbid</values>
+<classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+</cache>
+<code>
+<disabled>0</disabled>
+<name>code</name>
+<number>2</number>
+<prettyName>Code</prettyName>
+<rows>20</rows>
+<size>50</size>
+<unmodifiable>0</unmodifiable>
+<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+</code>
+<name>
+<disabled>0</disabled>
+<name>name</name>
+<number>1</number>
+<prettyName>Name</prettyName>
+<size>30</size>
+<unmodifiable>0</unmodifiable>
+<classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+</name>
+<parse>
+<disabled>0</disabled>
+<displayFormType>select</displayFormType>
+<displayType>yesno</displayType>
+<name>parse</name>
+<number>4</number>
+<prettyName>Parse content</prettyName>
+<unmodifiable>0</unmodifiable>
+<classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+</parse>
+<use>
+<cache>0</cache>
+<disabled>0</disabled>
+<displayType>select</displayType>
+<multiSelect>0</multiSelect>
+<name>use</name>
+<number>3</number>
+<prettyName>Use this extension</prettyName>
+<relationalStorage>0</relationalStorage>
+<separator> </separator>
+<separators> ,|</separators>
+<size>1</size>
+<unmodifiable>0</unmodifiable>
+<values>currentPage=Always on this page|onDemand=On demand|always=Always on this wiki</values>
+<classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+</use>
+</class>
+<name>CalendarCode.CreateCalendarEvent</name>
+<number>0</number>
+<className>XWiki.JavaScriptExtension</className>
+<guid>b40c1553-f8b8-4af6-a589-5ab7ed093319</guid>
+<property>
+<cache>long</cache>
+</property>
+<property>
+<code>var startDate = new DatePicker({
+  relative : 'startDate',
+  language : "$context.language",
+  dateFormat : [ ["dd","mm","yyyy"], "/" ]
+});
+
+var endDate = new DatePicker({
+  relative : 'endDate',
+  language : "$context.language",
+  dateFormat : [ ["dd","mm","yyyy"], "/" ]
+});
+
+var repeatsUntil = new DatePicker({
+  relative : 'repeatsUntil',
+  language : "$context.language",
+  dateFormat : [ ["dd","mm","yyyy"], "/" ]
+});</code>
+</property>
+<property>
+<name></name>
+</property>
+<property>
+<parse>1</parse>
+</property>
+<property>
+<use>currentPage</use>
+</property>
+</object>
+<content>{{velocity}}
+##adding resources for datepicker extension
+$xwiki.jsfx.use("js/scriptaculous/scriptaculous.js")
+$xwiki.jsx.use("XWiki.DatePickerExtension", {'defer':false})
+$xwiki.ssx.use("XWiki.DatePickerExtension")
+##setting the values for the html elements which have more than one option
+#set($timeVals = ['00:00', '00:30', '01:00', '01:30', '02:00', '02:30', '03:00', '03:30', '04:00', '04:30', '05:00', '05:30', '06:00', '06:30', '07:00', '07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00', '22:30', '23:00', '23:30'])
+#set($repeatsVals = {'never' : $msg.get("eventNever"), 'daily' : $msg.get("eventDaily"), 'weekly' : $msg.get("eventWeekly"), 'monthly' : $msg.get("eventMonthly"), 'yearly' : $msg.get("eventYearly")})
+#set($notificationsVals = {'0' : $msg.get("eventNone"), '10' : $msg.get("event10Min"), '30' : $msg.get("event30Min"), '60' : $msg.get("event1H"), '1440' : $msg.get("event1D")})
+#set($colorVals = {'red' : $msg.get("eventRed"), 'green' : $msg.get("eventGreen")})
+#set($privacyVals = {'default' : $msg.get("eventDefault"), 'public' : $msg.get("eventPublic"), 'private' : $msg.get("eventPrivate")})
+#set($guestRightsVals = {'view' : $msg.get("eventViewEvent"), 'edit' : $msg.get("eventModifyEvent")})
+#set($formKeyVals = ['startDate', 'emailNotifications', 'location', 'endDate', 'repeats', 'endTime', 'repeatsUntil', 'startTime', 'description', 'name', 'allDay', 'color', 'privacy'])
+#if(!$guests)
+	#set($guests = "")
+#end
+##adding a new guest
+#if($request.get('addGuest'))
+	#set($guests = $request.get("guests") + $request.get("guestName") + "-" + $request.get("guestRights") + ",")
+#end
+##processing guest removals
+#foreach($key in $request.getParameterNames())
+	#if($key.length() &gt; 5)
+		#if($key.substring(0,6) == "Remove")
+			#if($request.get($key))
+				#set($guests = "")
+				#set($splitKey = $key.split("-"))
+    		#set($userToRemove = $splitKey.get(1))
+    		#set($oldGuests = $request.get("guests").split(","))
+				#foreach($userItem in $oldGuests)
+     		#set($item = $userItem.split("-"))
+					#if($item.get(0) != $userToRemove)
+					#set($guests = $guests + $item.get(0) + "-" + $item.get(1) + ",")
+					#end
+    		#end
+   #end
+  #end
+ #end
+#end
+##processing form submission
+#if($request.get('submit'))
+	#set($docName = $xwiki.getUniquePageName('Test',$request.get('name')))
+	#set($eventDoc = $xwiki.getDocument('Test', $docName))
+	#set($obj = $eventDoc.newObject('CalendarCode.EventClass'))
+	#set($class = $obj.xWikiClass)
+	#foreach($prop in $class.properties)
+		#if($prop.name != "guestViewList" &amp;&amp; $prop.name != "guestEditList" &amp;&amp; $prop.name != "attendingGuests" &amp;&amp; $prop.name != "nonattendingGuests" &amp;&amp; $prop.name != "allDay")
+			$obj.set($prop.name, $request.get($prop.name))
+  	#end
+ 	#end
+	#if("$request.get('allDay')" == "on")
+		$obj.set('allDay', 1)
+ 	#else
+  	$obj.set('allDay', 0)
+ 	#end
+ 	#set($guestList = $request.get('guests').split(','))
+ 	#set($viewGuests = "")
+ 	#set($editGuests = "")
+ 	#foreach($item in $guestList)
+  	#set($nameRight = $item.split('-'))
+		#if($nameRight.size() &gt; 1)
+			##notifying guests
+				#set($email = $xwiki.getUser($nameRight.get(0)).getEmail())
+				#set($currentUser = $xwiki.getUser().getUser())
+				#set($confDoc = $xwiki.getDocument("CalendarCode.GuestConfirmation"))
+				#set($discard = $xwiki.mailsender.sendTextMessage($xwiki.getUser().getEmail(), $email, $msg.get("eventInvitationSubject"), $msg.get("eventInvitationText", [$xwiki.getUserName("$currentUser", false), $request.get("name"), $eventDoc.getExternalURL(), $confDoc.getExternalURL("view","event=$eventDoc.fullName")])))
+			##end of user notification
+			#set($notifiedGuests = "")
+	  	#if("$nameRight.get(1)" == "view")
+	   		#set($viewGuests = $viewGuests + $nameRight.get(0) + ",")
+				#set($notifiedGuests = $notifiedGuests + $nameRight.get(0) + ",")
+	  	#end
+	  	#if("$nameRight.get(1)" == "edit")
+	   		#set($editGuests = $editGuests + $nameRight.get(0) + ",")
+				#set($notifiedGuests = $notifiedGuests + $nameRight.get(0) + ",")
+	  	#end
+		#end
+ 	#end
+	##mark users as notified
+				$obj.set("notifiedGuests", $notifiedGuests)
+	##end of marking users as notified
+ 	$obj.set("guestViewList", $viewGuests)
+ 	$obj.set("guestEditList", $editGuests)
+	##adding rights on the page depending on the privacy settings
+	##adding edit rights for the creator of the event and the guests with edit rights
+	#set($editGuests = $editGuests + "$xwiki.getUser().getUser()")
+	#set($editRights = $eventDoc.newObject("XWiki.XWikiRights"))
+	$editRights.set("levels", "edit")
+	$editRights.set("users", $editGuests)
+	$editRights.set("allow", 1)
+	##adding delete right for the creator of the event
+	#set($deleteRights = $eventDoc.newObject("XWiki.XWikiRights"))
+	$deleteRights.set("levels", "delete")
+	$deleteRights.set("users", "$xwiki.getUser().getUser()")
+	$deleteRights.set("allow", 1)
+	##adding view rights respective to the privacy settings
+	#if("$request.get('privacy')" == "public")
+		#set($viewRights = $eventDoc.newObject("XWiki.XWikiRights"))
+		$viewRights.set("groups", "XWikiAllGroup")
+		$viewRights.set("levels", "view")
+		$viewRights.set("allow", 1)
+	#elseif("$request.get('privacy')" == "private")
+		#set($viewRights = $eventDoc.newObject("XWiki.XWikiRights"))
+		#set($viewRGuests = $viewGuests + $editGuests)
+		$viewRights.set("users", $viewRGuests)
+		$viewRights.set("levels", "view")
+		$viewRights.set("allow", 1)
+	#end
+ 	$eventDoc.save()
+#end
+##setting up values for defaulting fields
+#set($defaults = {})
+#foreach($key in $formKeyVals)
+	#if($request.get($key))
+		#set($discard = $defaults.put($key, $request.get($key)))
+ 	#else
+ 		#set($discard = $defaults.put($key, ""))
+ 	#end  
+#end
+
+{{html}}
+&lt;form class = "xform half" action = "$doc.getURL()" method = "post"&gt;
+	&lt;input type = "hidden" value = "${guests}" name = "guests" /&gt;
+		&lt;dl&gt;
+			&lt;dt&gt;
+   			&lt;label for = "name"&gt;$msg.get("eventName")&lt;/label&gt;
+  		&lt;/dt&gt;
+  	&lt;dd&gt;
+   		&lt;input type = "text" name = "name" id = "name" size = "60" value = "$defaults.get('name')" /&gt;
+  	&lt;/dd&gt;
+  	&lt;/dl&gt;
+ 		&lt;div id = "dates"&gt;
+  		&lt;dl&gt;
+   			&lt;dt&gt;
+    			&lt;label for = "startDate"&gt;$msg.get("eventStartDate")&lt;/label&gt;
+   			&lt;/dt&gt;
+   			&lt;dd&gt;
+    			&lt;input type = "text" name = "startDate" id = "startDate" size = "60" value = "$defaults.get('startDate')"/&gt;
+   			&lt;/dd&gt;
+  		&lt;/dl&gt;
+  		&lt;dl&gt;
+   			&lt;dt&gt;
+    			&lt;label for = "startTime"&gt;$msg.get("eventStartTime")&lt;/label&gt;
+   			&lt;/dt&gt;
+   			&lt;dd&gt;
+    			&lt;select name = "startTime" id = "startTime" size = "1"&gt;
+     				#foreach($item in $timeVals)
+      				#if("${item}" == "$defaults.get('startTime')")
+       					&lt;option SELECTED value = "${item}"&gt;$item &lt;/option&gt;
+      				#else
+       					&lt;option value = "${item}"&gt;$item &lt;/option&gt;
+      				#end
+     				#end 
+    			&lt;/select&gt;
+   			&lt;/dd&gt;
+  		&lt;/dl&gt;
+ 			&lt;dl&gt;
+   			&lt;dt&gt;
+    			&lt;label for = "endDate"&gt;$msg.get("eventEndDate")&lt;/label&gt;
+   			&lt;/dt&gt;
+   			&lt;dd&gt;
+    			&lt;input type = "text" name = "endDate" id = "endDate" size = "60" value = "$defaults.get('endDate')"/&gt;
+   			&lt;/dd&gt;
+  		&lt;/dl&gt;
+  		&lt;dl&gt;
+   			&lt;dt&gt;
+    			&lt;label for = "endTime"&gt;$msg.get("eventEndTime")&lt;/label&gt;
+   			&lt;/dt&gt;
+   			&lt;dd&gt;
+    			&lt;select name = "endTime" id = "endTime" size = "1"&gt;
+     			#foreach($item in $timeVals)
+      			#if("${item}" == "$defaults.get('endTime')")
+       				&lt;option SELECTED value = "${item}"&gt;$item &lt;/option&gt;
+      			#else
+       				&lt;option value = "${item}"&gt;$item &lt;/option&gt;
+      			#end
+     			#end
+    			&lt;/select&gt;
+   			&lt;/dd&gt;
+  		&lt;/dl&gt;
+  		&lt;dl&gt;
+   			&lt;dt&gt;
+    			&lt;label for = "allDay"&gt;$msg.get("eventAllDay")&lt;/label&gt;
+   			&lt;/dt&gt;
+   			&lt;dd&gt;
+    			#if("$defaults.get('allDay')" == "on")
+     				&lt;input type = "checkbox" name = "allDay" id = "allDay" size = "60" CHECKED/&gt;
+    			#else
+     				&lt;input type = "checkbox" name = "allDay" id = "allDay" size = "60"/&gt;
+    			#end
+   			&lt;/dd&gt;
+  		&lt;/dl&gt;
+  		&lt;dl&gt;
+   			&lt;dt&gt;
+    			&lt;label for = "repeats"&gt;$msg.get("eventRepeats")&lt;/label&gt;
+   			&lt;/dt&gt;
+   			&lt;dd&gt;
+    			&lt;select name = "repeats" id = "repeats" size = "1" &gt;
+     				#foreach($key in $repeatsVals.keySet())
+      				#if("${key}" == "$defaults.get('repeats')")
+       					&lt;option value = "${key}" SELECTED&gt;$repeatsVals.get($key)&lt;/option&gt;
+      				#else
+       					&lt;option value = "${key}"&gt;$repeatsVals.get($key)&lt;/option&gt;
+      				#end
+     				#end
+    			&lt;/select&gt;
+   			&lt;/dd&gt;
+  		&lt;/dl&gt;
+  		&lt;dl&gt;
+   			&lt;dt&gt;
+    			&lt;label for = "repeatsUntil"&gt;$msg.get('eventRepeatsUntil')&lt;/label&gt;
+   			&lt;/dt&gt;
+   			&lt;dd&gt;
+    			&lt;input type = "text" name = "repeatsUntil" id = "repeatsUntil" size = "60" value = "$defaults.get('repeatsUntil')"/&gt;
+   			&lt;/dd&gt;
+  		&lt;/dl&gt;
+ 		&lt;/div&gt;
+ 		&lt;dl&gt;
+  		&lt;dt&gt;
+   			&lt;label for = "description"&gt;$msg.get("eventDescription")&lt;/label&gt;
+  		&lt;/dt&gt;
+  		&lt;dd&gt;
+   			&lt;textarea name = "description" id = "description" rows = "5" cols = "45"&gt;$defaults.get("description")&lt;/textarea&gt;
+  		&lt;/dd&gt;
+ 		&lt;/dl&gt;
+ 		&lt;dl&gt;
+  		&lt;dt&gt;
+   			&lt;label for = "location"&gt;$msg.get("eventLocation")&lt;/label&gt;
+  		&lt;/dt&gt;
+  		&lt;dd&gt;
+   			&lt;input type = "text" name = "location" id = "location" size = "60" value = "$defaults.get('location')"/&gt;
+  		&lt;/dd&gt;
+ 		&lt;/dl&gt;
+ 		&lt;dl&gt;
+  		&lt;dt&gt;
+   			&lt;label for = "color"&gt;$msg.get("eventColor")&lt;/label&gt;
+  		&lt;/dt&gt;
+  		&lt;dd&gt;
+   			#foreach($key in $colorVals.keySet())
+	    		#if("${key}" == "$defaults.get('color')")
+	     			&lt;input type = "radio" name = "color" value = "${key}" CHECKED&gt;$colorVals.get($key)&lt;/input&gt;
+	    		#else
+	     			&lt;input type = "radio" name = "color" value = "${key}"&gt;$colorVals.get($key)&lt;/input&gt;
+	    		#end
+   			#end
+  		&lt;/dd&gt;
+ 		&lt;/dl&gt;
+ 		&lt;dl&gt;
+  		&lt;dt&gt;
+   			&lt;label for = "privacy"&gt;$msg.get("eventPrivacy")&lt;/label&gt;
+  		&lt;/dt&gt;
+  		&lt;dd&gt;
+   			#foreach($key in $privacyVals.keySet())
+    			#if("${key}" == "$defaults.get('privacy')")
+     				&lt;input type = "radio" name = "privacy" value = "${key}" CHECKED&gt;$privacyVals.get($key)&lt;/input&gt; &lt;br/&gt;
+    			#else
+     				&lt;input type = "radio" name = "privacy" value = "${key}"&gt;$privacyVals.get($key)&lt;/input&gt; &lt;br/&gt;
+    			#end
+   			#end
+  		&lt;/dd&gt;
+ 		&lt;/dl&gt;
+ 		&lt;dl&gt;
+  		&lt;dt&gt;
+   			&lt;label for = "emailNotifications"&gt;$msg.get("eventEmailNotifications")&lt;/label&gt;
+  		&lt;/dt&gt;
+  		&lt;dd&gt;
+   			&lt;select name = "emailNotifications" id = "emailNotifications" size = "1"&gt;
+    			#foreach($key in $notificationsVals.keySet())
+     				#if("${key}" == "$defaults.get('emailNotifications')")
+      				&lt;option value = "${key}" SELECTED&gt;$notificationsVals.get($key)&lt;/option&gt;
+     				#else
+      				&lt;option value = "${key}"&gt;$notificationsVals.get($key)&lt;/option&gt;
+     				#end 
+    			#end
+   			&lt;/select&gt;
+  		&lt;/dd&gt;
+ 		&lt;/dl&gt;
+ 		&lt;div id = "addGuests"&gt;
+  		&lt;dl&gt;
+   			&lt;dt&gt;
+    			&lt;label for = "guestName"&gt;$msg.get("eventGuestName")&lt;/label&gt;
+   			&lt;/dt&gt;
+   			&lt;dd&gt;
+    			&lt;input type = "text" name = "guestName" id = "guestName" class = "suggestUsers"/&gt;
+   			&lt;/dd&gt;
+  		&lt;/dl&gt;   
+  		&lt;dl&gt;
+   			&lt;dt&gt;
+    			&lt;label for = "guestRights"&gt;$msg.get("eventGuestRights")&lt;/label&gt;
+   			&lt;/dt&gt;
+   			&lt;dd&gt;
+    			#foreach($key in $guestRightsVals.keySet())
+     				#if("${key}" == "view")
+      				&lt;input type = "radio" name = "guestRights" value = "${key}" CHECKED&gt;$guestRightsVals.get($key)&lt;/input&gt;
+     				#else
+      				&lt;input type = "radio" name = "guestRights" value = "${key}"&gt;$guestRightsVals.get($key)&lt;/input&gt;
+     				#end
+   			 #end
+   			&lt;/dd&gt;
+  		&lt;/dl&gt;
+  		&lt;br/&gt;
+  		&lt;span class = "buttonwrapper"&gt;
+   			&lt;input type = "submit" name = "addGuest" value = "$msg.get('eventAddGuest')" class = "button" /&gt;
+  		&lt;/span&gt;
+			&lt;div id = "guestList"&gt;
+   			#if($guests != "" &amp;&amp; $guests)
+   				&lt;span id = "guestListTitle"&gt;
+    				&lt;p&gt;$msg.get("enventGuestList")&lt;/p&gt;
+   				&lt;/span&gt;
+   				&lt;table id = "guestListTable"&gt;
+	   				#set($guestList = $guests.split(","))
+	    			#foreach($item in $guestList)
+	     				#set($newItem = $item.split("-"))
+	       			&lt;tr&gt;
+	      				&lt;td class = "guestName"&gt;$newItem.get(0)&lt;/td&gt;
+	      				&lt;td class = "guestRight"&gt;$newItem.get(1)&lt;/td&gt;
+	      				&lt;td class = "guestRemove"&gt;
+	       					&lt;span class = "buttonWrapper"&gt;  
+	        					#set($removeName = "Remove-" + $newItem.get(0))
+	        					&lt;input type = "submit" name = "${removeName}" value = "$msg.get('eventRemove')" class = "button removeGuest secondary"/&gt;
+	       					&lt;/span&gt;
+	      				&lt;/td&gt;
+	     				&lt;/tr&gt;
+	   				 #end
+   				&lt;/table&gt;
+   			#end
+  		&lt;/div&gt;  
+ 	&lt;/div&gt;
+  &lt;br/&gt;
+ 	&lt;span class = "buttonwrapper"&gt;
+  	&lt;input type = "submit" name = "submit" value = "$msg.get('eventSave')" class = "button" /&gt;
+ 	&lt;/span&gt;
+&lt;/form&gt;
+{{/html}}
+{{/velocity}}</content></xwikidoc>
