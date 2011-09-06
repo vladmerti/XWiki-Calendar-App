@@ -11,9 +11,9 @@
 <customClass></customClass>
 <contentAuthor>XWiki.Admin</contentAuthor>
 <creationDate>1309166692000</creationDate>
-<date>1309166722000</date>
-<contentUpdateDate>1309166722000</contentUpdateDate>
-<version>1.1</version>
+<date>1315323726000</date>
+<contentUpdateDate>1315323726000</contentUpdateDate>
+<version>10.1</version>
 <title>CalendarCode</title>
 <template></template>
 <defaultTemplate></defaultTemplate>
@@ -22,4 +22,32 @@
 <minorEdit>false</minorEdit>
 <syntaxId>xwiki/2.0</syntaxId>
 <hidden>false</hidden>
-<content>\\</content></xwikidoc>
+<content>{{velocity}}
+[[New Event (custom form)&gt;&gt;CreateCalendarEvent]]
+#if($request.get('submit'))
+  #set($eName ="CalendarCode." + $request.get('eventName'))
+  #set($eDoc = $xwiki.getDocument($eName))
+  $eDoc.newObject('CalendarCode.EventClass')
+  $eDoc.setContent('{{include document="CalendarCode.EventSheet"/}}')
+  $eDoc.save()
+  $response.sendRedirect($xwiki.getURL($eName, 'inline'))
+#end
+{{html clean = "false"}}
+  &lt;form id = "createEvent" class = "xformInline third" action = "${doc.getURL()}"&gt;
+    &lt;label for = "eventName"&gt;New event (inline)&lt;/label&gt;
+    &lt;input type = "text" name = "eventName"/&gt;
+    &lt;span class = "butonwrapper"&gt;
+      &lt;input type = "submit" name = "submit" class = "button" value = "Add event"/&gt;
+    &lt;/span&gt;
+  &lt;/form&gt;
+{{/html}}
+#set($options = {
+  "className" : "CalendarCode.EventClass",
+  "rowCount" : 10
+})
+#set($columns = ["name", "startDate", "startTime", "endDate", "endTime"])
+#set($columnProperties = {
+  "name" : {"type" : "text", "link" : "view"}
+})
+#livetable("events" $columns $columnProperties $options)
+{{/velocity}}</content></xwikidoc>
